@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Interpolation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Linear Interpolation</h1>
+        <form id="interpolationForm">
+            <label for="input1">Input Value (ppmV):</label>
+            <input type="number" id="input1" name="input1">
+            <label for="output1">Dewpoint Output ASTM-D1142 (degC):</label>
+            <input type="text" id="output1" name="output1" readonly>
+            <button type="button" onclick="performInterpolation()">Convert to ASTM-D1142</button>
+        </form>
+    </div>
+
+    <script>
+        function linearInterpolation(XYArray, input1) {
+            if(input1 <= XYArray[0][0]) return XYArray[0][1];
+            if(input1 >= XYArray[XYArray.length - 1][0]) return XYArray[XYArray.length - 1][1];
+
+            const index = XYArray.findIndex(element => element[0] > input1);
+            const [x0, y0] = XYArray[index - 1];
+            const [x1, y1] = XYArray[index];
+            const slope = (y1 - y0) / (x1 - x0);
+            return slope * (input1 - x0) + y0;
+        }
+
+        const dataPoints = [
+            [7.3113, -40], [8.0596, -38.89], [8.8488, -37.78], [9.6585, -36.67], [10.5295, -35.56],
+            [11.6519, -34.44], [12.8153, -33.33], [14.04, -32.22], [15.326, -31.11], [16.6734, -30],
+            [18.0821, -28.89], [19.8241, -27.78], [21.5865, -26.67], [23.4716, -25.56], [25.4589, -24.44],
+            [27.7795, -23.33], [30.1818, -22.22], [32.7069, -21.11], [35.6061, -20], [38.5871, -18.89],
+            [41.8952, -17.78], [45.4139, -16.67], [49.1371, -15.56], [53.2753, -14.44], [57.6179, -13.33],
+            [62.1651, -12.22], [67.3317, -11.11], [72.7089, -10], [78.4951, -8.89], [84.6902, -7.78],
+            [91.3003, -6.67], [98.3254, -5.56], [105.964, -4.44], [114.0176, -3.33], [122.6906, -2.22],
+            [131.9771, -1.11], [141.8831, 0], [152.4086, 1.11], [163.758, 2.22], [175.9315, 3.33],
+            [188.5138, 4.44], [202.1307, 5.56], [216.5655, 6.67], [232.2392, 7.78], [248.5263, 8.89],
+            [266.0525, 10], [284.3965, 11.11], [303.9795, 12.22], [323.9775, 13.33], [370.9498, 14.44],
+            [395.8794, 16.67], [421.2301, 17.78], [448.6255, 18.89], [478.6973, 20], [502.662, 21.11],
+            [543.5617, 22.22], [576.5204, 23.33], [613.9894, 24.44], [651.8797, 25.56], [694.2803, 26.67],
+            [736.0491, 27.78], [781.3367, 28.89], [830.7747, 30], [880.1515, 31.11], [935.7233, 32.22],
+            [989.1893, 33.33], [1046.8058, 34.44], [1110.6173, 35.56], [1174.3675, 36.67], [1244.3128, 37.78],
+            [1316.3028, 38.89], [1390.3373, 40], [1470.5669, 41.11], [1552.8411, 42.22], [1639.2045, 43.33],
+            [1731.763, 44.44], [1828.4106, 45.56], [1927.1029, 46.67], [2031.929, 47.78], [2142.9502, 48.89],
+            [2256.0159, 50], [2377.3214, 51.11], [2502.716, 52.22]
+        ];
+
+        function performInterpolation() {
+            const input1 = document.getElementById('input1').value;
+            const output1 = document.getElementById('output1');
+            if (input1 !== '') {
+                const interpolatedY = linearInterpolation(dataPoints, parseFloat(input1));
+                output1.value = interpolatedY;
+            } else {
+                output1.value = 'Please enter a value.';
+            }
+        }
+    </script>
+</body>
+</html>
